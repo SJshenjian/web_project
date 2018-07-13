@@ -1,2 +1,2 @@
-# web_project
+# web-project
 record my projects,  just for studying
