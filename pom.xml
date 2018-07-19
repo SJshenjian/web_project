@@ -11,6 +11,7 @@
     <modules>
         <module>xuefeng</module>
         <module>webservice</module>
+        <module>junit</module>
     </modules>
 
     <properties>
@@ -219,6 +220,7 @@
             <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
