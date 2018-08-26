@@ -12,6 +12,7 @@
         <module>xuefeng</module>
         <module>webservice</module>
         <module>junit</module>
+        <module>miniJVM</module>
     </modules>
 
     <properties>
