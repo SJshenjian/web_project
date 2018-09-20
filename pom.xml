@@ -13,6 +13,7 @@
         <module>webservice</module>
         <module>junit</module>
         <module>miniJVM</module>
+        <module>struts2</module>
     </modules>
 
     <properties>
