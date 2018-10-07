@@ -14,6 +14,8 @@
         <module>junit</module>
         <module>miniJVM</module>
         <module>struts2</module>
+        <module>tio</module>
+        <module>tio/helloworld</module>
     </modules>
 
     <properties>
