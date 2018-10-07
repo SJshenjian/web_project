@@ -52,7 +52,7 @@
         
         <property name="configLocation" value="classpath:mybatis-config.xml" />  
         <!-- 自动扫描mapping.xml文件 -->  
-        <property name="mapperLocations" value="classpath:com/haotu369/mapping/*.xml"></property>
+        <property name="mapperLocations" value="classpath:com/haotu369/xuefeng/mapping/*.xml"></property>
    		
     </bean>       
               

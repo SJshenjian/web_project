@@ -16,7 +16,7 @@
                         
 
 	<!-- 告诉Spring 来扫描指定包下的类，并注册被@Component，@Controller，@Service，@Repository等注解标记的组件。 -->
-	<context:component-scan base-package="com.haotu369.controller,com.haotu369.service" />
+	<context:component-scan base-package="com.haotu369.xuefeng.*" />
 	
 	<!-- 告知Spring，我们启用注解驱动。然后Spring会自动为我们注册某些Bean到工厂中，来处理我们的请求-->
     <mvc:annotation-driven/> <!-- 启用注解 -->
