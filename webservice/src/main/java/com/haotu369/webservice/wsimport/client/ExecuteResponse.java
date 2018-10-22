@@ -1,5 +1,5 @@
 
-package com.haotu369.webservice.client;
+package com.haotu369.webservice.wsimport.client;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>executeResponse complex type�� Java �ࡣ
+ * <p>executeResponse complex type的 Java 类。
  * 
- * <p>����ģʽƬ��ָ�������ڴ����е�Ԥ�����ݡ�
+ * <p>以下模式片段指定包含在此类中的预期内容。
  * 
  * <pre>
  * &lt;complexType name="executeResponse">

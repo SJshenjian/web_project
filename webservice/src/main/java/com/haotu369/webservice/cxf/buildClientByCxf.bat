@@ -1,0 +1,1 @@
+wsdl2java -encoding utf-8 -d e:\\temp -p com.haotu369.webservice.cxf.client http://127.0.0.1:9082/cxf/service/workflow?wsdl

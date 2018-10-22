@@ -1,5 +1,5 @@
 
-package com.haotu369.webservice.client;
+package com.haotu369.webservice.wsimport.client;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,14 +17,14 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "WorkFlowServiceService", targetNamespace = "http://service.haotu369.com/", wsdlLocation = "http://127.0.0.1:9081/service/workflow?wsdl")
+@WebServiceClient(name = "WorkFlowServiceService", targetNamespace = "http://service.wsimport.webservice.haotu369.com/", wsdlLocation = "http://127.0.0.1:9081/service/workflow?wsdl")
 public class WorkFlowServiceService
     extends Service
 {
 
     private final static URL WORKFLOWSERVICESERVICE_WSDL_LOCATION;
     private final static WebServiceException WORKFLOWSERVICESERVICE_EXCEPTION;
-    private final static QName WORKFLOWSERVICESERVICE_QNAME = new QName("http://service.haotu369.com/", "WorkFlowServiceService");
+    private final static QName WORKFLOWSERVICESERVICE_QNAME = new QName("http://service.wsimport.webservice.haotu369.com/", "WorkFlowServiceService");
 
     static {
         URL url = null;
@@ -69,7 +69,7 @@ public class WorkFlowServiceService
      */
     @WebEndpoint(name = "WorkFlowServicePort")
     public WorkFlowService getWorkFlowServicePort() {
-        return super.getPort(new QName("http://service.haotu369.com/", "WorkFlowServicePort"), WorkFlowService.class);
+        return super.getPort(new QName("http://service.wsimport.webservice.haotu369.com/", "WorkFlowServicePort"), WorkFlowService.class);
     }
 
     /**
@@ -81,7 +81,7 @@ public class WorkFlowServiceService
      */
     @WebEndpoint(name = "WorkFlowServicePort")
     public WorkFlowService getWorkFlowServicePort(WebServiceFeature... features) {
-        return super.getPort(new QName("http://service.haotu369.com/", "WorkFlowServicePort"), WorkFlowService.class, features);
+        return super.getPort(new QName("http://service.wsimport.webservice.haotu369.com/", "WorkFlowServicePort"), WorkFlowService.class, features);
     }
 
     private static URL __getWsdlLocation() {

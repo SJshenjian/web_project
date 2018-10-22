@@ -1,4 +1,4 @@
-package com.haotu369.webservice.service;
+package com.haotu369.webservice.wsimport.service;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
@@ -18,7 +18,7 @@ public class WorkFlowService {
     }
 
     public static void main(String[] args) {
-        Endpoint endpoint = Endpoint.publish("http://127.0.0.1:9081/service/workflow", new WorkFlowService());
+        Endpoint endpoint = Endpoint.publish("http://127.0.0.1:9081/java/service/workflow", new WorkFlowService());
         if (endpoint.isPublished()) {
             System.out.println("webservice 发布成功");
         }
