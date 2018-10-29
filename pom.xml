@@ -15,6 +15,7 @@
         <module>miniJVM</module>
         <module>struts2</module>
         <module>tio</module>
+        <module>spring</module>
     </modules>
 
     <properties>
