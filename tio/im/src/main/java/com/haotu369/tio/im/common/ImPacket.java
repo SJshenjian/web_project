@@ -15,6 +15,11 @@ public class ImPacket extends Packet {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImPacket.class);
 
     /**
+     * 消息体最大限制
+     */
+    public static final int MAX_LENGTH_OF_BODY = (int) (1024 * 1024 * 2.1);
+
+    /**
      * 心跳字节
      */
     public static final byte HEARTBEAT_BYTE = -128;
@@ -52,11 +57,21 @@ public class ImPacket extends Packet {
      */
     public static final byte FIRST_BYTE_MASK_4_BYTE_LENGTH = 0B0010000;
 
+    /**
+     * TODO ???
+     * 版本号
+     */
+    public static final byte FIRST_BYTE_MASK_VERSION = 0B00001111;
+
     public static byte encodeCompress(byte bs, boolean isCompress) {
         if (isCompress) {
             return (byte) (bs | FIRST_BYTE_MASK_COMPRESS);
         }
         return (byte) (bs & (FIRST_BYTE_MASK_COMPRESS ^ 0B01111111));
+    }
+
+    public static boolean decodeCompress(byte bs) {
+        return (FIRST_BYTE_MASK_COMPRESS & bs) != 0;
     }
 
     public static byte encodeHasSynSeq(byte bs, boolean hasSynSeq) {
@@ -66,6 +81,10 @@ public class ImPacket extends Packet {
         return (byte) (bs & (FIRST_BYTE_MASK_HAS_SYNSEQ ^ 0B01111111));
     }
 
+    public static boolean decodeHasSynSeq(byte bs) {
+        return (FIRST_BYTE_MASK_HAS_SYNSEQ & bs) != 0;
+    }
+
     public static byte encode4ByteLength(byte bs, boolean is4ByteLength) {
         if (is4ByteLength) {
             return (byte) (bs | FIRST_BYTE_MASK_4_BYTE_LENGTH);
@@ -73,8 +92,16 @@ public class ImPacket extends Packet {
         return (byte) (bs & (FIRST_BYTE_MASK_4_BYTE_LENGTH ^ 0B01111111));
     }
 
+    public static boolean decode4ByteLength(byte bs) {
+        return (FIRST_BYTE_MASK_4_BYTE_LENGTH & bs) != 0;
+    }
+
     private Command command;
     private byte[] body;
+
+    public ImPacket(Command command) {
+        this.setCommand(command);
+    }
 
     /**
      * 计算消息头占用的字节数

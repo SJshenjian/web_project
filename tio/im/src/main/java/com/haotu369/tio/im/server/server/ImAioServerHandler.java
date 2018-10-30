@@ -3,10 +3,14 @@ package com.haotu369.tio.im.server.server;
 import cn.hutool.core.util.ZipUtil;
 import com.haotu369.tio.im.common.ImPacket;
 import com.haotu369.tio.im.common.ImSessionContext;
+import com.haotu369.tio.im.common.http.HttpRequestDecoder;
+import com.haotu369.tio.im.common.http.HttpRequestPacket;
 import com.haotu369.tio.im.common.http.HttpResponseEncoder;
 import com.haotu369.tio.im.common.http.HttpResponsePacket;
+import com.haotu369.tio.im.common.http.websocket.WebSocketDecoder;
 import com.haotu369.tio.im.common.http.websocket.WebSocketEncoder;
 import com.haotu369.tio.im.common.http.websocket.WebSocketPacket;
+import com.haotu369.tio.im.common.http.websocket.WebSocketPacket.Opcode;
 import com.haotu369.tio.im.common.packets.Command;
 import com.haotu369.tio.im.server.server.handler.*;
 import org.slf4j.Logger;
@@ -54,7 +58,138 @@ public class ImAioServerHandler implements ServerAioHandler {
 
     @Override
     public Packet decode(ByteBuffer buffer, int limit, int position, int readableLength, ChannelContext channelContext) throws AioDecodeException {
-        return null;
+        ImSessionContext imSessionContext = (ImSessionContext) channelContext.getAttribute();
+        int initPosition = position;
+        byte firstByte = buffer.get(initPosition);
+
+        if (!imSessionContext.isHandshake()) {
+            if (ImPacket.HANDSHAKE_BYTE == firstByte) {
+                buffer.position(initPosition + 1);
+                return handshakePacket;
+            } else {
+                HttpRequestPacket requestPacket = HttpRequestDecoder.decode(buffer, channelContext);
+                if (requestPacket == null) {
+                    return null;
+                }
+
+                requestPacket.setCommand(Command.COMMAND_HANDSHAKE_REQ);
+                imSessionContext.setHttpHandshakePacket(requestPacket);
+                imSessionContext.setWebSocket(true);
+                return requestPacket;
+            }
+        }
+
+        boolean isWebSocket = imSessionContext.isWebSocket();
+        if (isWebSocket) {
+            WebSocketPacket webSocketPacket = WebSocketDecoder.decode(buffer, channelContext);
+            if (webSocketPacket == null) {
+                return null;
+            }
+
+            if (!webSocketPacket.isWsEof()) {
+                LOGGER.error("{} WebSocket包还没有传完", channelContext);
+                return null;
+            }
+
+            Opcode opcode = webSocketPacket.getOpcode();
+            if (Opcode.BINARY == opcode) {
+                byte[] body = webSocketPacket.getWsBody();
+                if (body == null || body.length <= 0) {
+                    throw new AioDecodeException("错误的WebSocket包，body为空");
+                }
+
+                Command command = Command.forNumber(body[0]);
+                WebSocketPacket imPacket = new WebSocketPacket(command);
+
+                if (body.length > 1) {
+                    byte[] dst = new byte[body.length - 1];
+                    System.arraycopy(body, 1, dst, 0,body.length -1);
+                    imPacket.setWsBody(dst);
+                }
+                return imPacket;
+            } else if (Opcode.PING == opcode || Opcode.PONG == opcode) {
+                return heartbeatPacket;
+            } else if (Opcode.CLOSE == opcode) {
+                WebSocketPacket imPacket = new WebSocketPacket(Command.COMMAND_CLOSE_REQ);
+                return imPacket;
+            } else if (Opcode.TEXT == opcode) {
+                throw new AioDecodeException("错误的WebSocket包，不支持Text类型的数据");
+            } else {
+                throw new AioDecodeException("错误的WebSocket包，错误的Opcode");
+            }
+        } else {
+            if (ImPacket.HEARTBEAT_BYTE == firstByte) {
+                buffer.position(initPosition + 1);
+                return heartbeatPacket;
+            }
+        }
+
+        firstByte = buffer.get();
+
+        boolean isCompress = ImPacket.decodeCompress(firstByte);
+        boolean isHasSynSeq = ImPacket.decodeHasSynSeq(firstByte);
+        boolean is4ByteLength = ImPacket.decode4ByteLength(firstByte);
+
+        // 计算消息头长度
+        int headerLength = ImPacket.LEAST_HEADER_LENGTH;
+        if (isHasSynSeq) {
+            headerLength += 4;
+        }
+        if (is4ByteLength) {
+            headerLength += 2;
+        }
+
+        if (readableLength < headerLength) {
+            return null;
+        }
+
+        // 取命令，此顺序不可变
+        byte code = buffer.get();
+        Command command = Command.forNumber(code);
+
+        // 计算消息体长度
+        int bodyLength = 0;
+        if (is4ByteLength) {
+            bodyLength = buffer.getInt();
+        } else {
+            bodyLength = buffer.getShort();
+        }
+
+        if (bodyLength > ImPacket.MAX_LENGTH_OF_BODY || bodyLength < 0) {
+            throw new AioDecodeException("bodyLength [" + bodyLength + "] is not right, remote:" + channelContext.getClientNode());
+        }
+
+        int neededLength = headerLength + bodyLength;
+        if (neededLength - readableLength < 0) {
+            return null;
+        }
+
+        WebSocketPacket imPacket = new WebSocketPacket(command);
+
+        // 取同步序列号
+        if (isHasSynSeq) {
+            int seq = buffer.getInt();
+            if (seq > 0) {
+                imPacket.setSynSeq(seq);
+            }
+        }
+
+        if (bodyLength > 0) {
+            byte[] dst = new byte[bodyLength];
+            buffer.get(dst);
+            if (isCompress) {
+                try {
+                    byte[] unzipByte = ZipUtil.unGzip(dst);
+                    imPacket.setBody(unzipByte);
+                } catch (Exception e) {
+                    throw new AioDecodeException(e);
+                }
+            } else {
+                imPacket.setBody(dst);
+            }
+        }
+
+        return imPacket;
     }
 
     @Override
