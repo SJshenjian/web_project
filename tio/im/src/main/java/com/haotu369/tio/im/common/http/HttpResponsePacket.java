@@ -1,6 +1,7 @@
 package com.haotu369.tio.im.common.http;
 
 import com.haotu369.tio.im.common.ImPacket;
+import com.haotu369.tio.im.common.packets.Command;
 
 /**
  * @author Jian Shen
@@ -9,5 +10,7 @@ import com.haotu369.tio.im.common.ImPacket;
  */
 public class HttpResponsePacket extends ImPacket {
 
+    public HttpResponsePacket() {
 
+    }
 }

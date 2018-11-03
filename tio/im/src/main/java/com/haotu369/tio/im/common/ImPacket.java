@@ -99,8 +99,17 @@ public class ImPacket extends Packet {
     private Command command;
     private byte[] body;
 
+    public ImPacket() {
+
+    }
+
     public ImPacket(Command command) {
-        this.setCommand(command);
+        this.command = command;
+    }
+
+    public ImPacket(Command command, byte[] body) {
+        this.command = command;
+        this.body = body;
     }
 
     /**

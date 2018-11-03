@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Jian Shen
@@ -25,7 +26,7 @@ public class DefaultBeanFactory implements BeanFactory {
     private static final String ID_ATTRIBUTE = "id";
     private static final String CLASS_ATTRIBUTE = "class";
 
-    private Map<String, BeansDefinition> beanDefinitionMap = new HashMap();
+    private Map<String, BeansDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
 
     public DefaultBeanFactory(String file) {
         this.loadBeanDefinition(file);

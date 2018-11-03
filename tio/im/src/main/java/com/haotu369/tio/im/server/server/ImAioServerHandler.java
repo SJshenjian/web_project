@@ -1,6 +1,7 @@
 package com.haotu369.tio.im.server.server;
 
 import cn.hutool.core.util.ZipUtil;
+import com.haotu369.tio.im.common.CommandStat;
 import com.haotu369.tio.im.common.ImPacket;
 import com.haotu369.tio.im.common.ImSessionContext;
 import com.haotu369.tio.im.common.http.HttpRequestDecoder;
@@ -11,15 +12,21 @@ import com.haotu369.tio.im.common.http.websocket.WebSocketDecoder;
 import com.haotu369.tio.im.common.http.websocket.WebSocketEncoder;
 import com.haotu369.tio.im.common.http.websocket.WebSocketPacket;
 import com.haotu369.tio.im.common.http.websocket.WebSocketPacket.Opcode;
-import com.haotu369.tio.im.common.packets.Command;
+import com.haotu369.tio.im.common.packets.*;
+import com.haotu369.tio.im.common.util.ImUtils;
 import com.haotu369.tio.im.server.server.handler.*;
+import com.haotu369.tio.im.server.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tio.core.ChannelContext;
 import org.tio.core.GroupContext;
+import org.tio.core.Tio;
 import org.tio.core.exception.AioDecodeException;
 import org.tio.core.intf.Packet;
+import org.tio.core.stat.ChannelStat;
+import org.tio.monitor.RateLimiterWrap;
 import org.tio.server.intf.ServerAioHandler;
+import org.tio.utils.SystemTimer;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -66,17 +73,16 @@ public class ImAioServerHandler implements ServerAioHandler {
             if (ImPacket.HANDSHAKE_BYTE == firstByte) {
                 buffer.position(initPosition + 1);
                 return handshakePacket;
-            } else {
-                HttpRequestPacket requestPacket = HttpRequestDecoder.decode(buffer, channelContext);
-                if (requestPacket == null) {
-                    return null;
-                }
-
-                requestPacket.setCommand(Command.COMMAND_HANDSHAKE_REQ);
-                imSessionContext.setHttpHandshakePacket(requestPacket);
-                imSessionContext.setWebSocket(true);
-                return requestPacket;
             }
+            HttpRequestPacket requestPacket = HttpRequestDecoder.decode(buffer, channelContext);
+            if (requestPacket == null) {
+                return null;
+            }
+
+            requestPacket.setCommand(Command.COMMAND_HANDSHAKE_REQ);
+            imSessionContext.setHttpHandshakePacket(requestPacket);
+            imSessionContext.setWebSocket(true);
+            return requestPacket;
         }
 
         boolean isWebSocket = imSessionContext.isWebSocket();
@@ -107,21 +113,23 @@ public class ImAioServerHandler implements ServerAioHandler {
                     imPacket.setWsBody(dst);
                 }
                 return imPacket;
-            } else if (Opcode.PING == opcode || Opcode.PONG == opcode) {
+            }
+            if (Opcode.PING == opcode || Opcode.PONG == opcode) {
                 return heartbeatPacket;
-            } else if (Opcode.CLOSE == opcode) {
+            }
+            if (Opcode.CLOSE == opcode) {
                 WebSocketPacket imPacket = new WebSocketPacket(Command.COMMAND_CLOSE_REQ);
                 return imPacket;
-            } else if (Opcode.TEXT == opcode) {
+            }
+            if (Opcode.TEXT == opcode) {
                 throw new AioDecodeException("错误的WebSocket包，不支持Text类型的数据");
-            } else {
-                throw new AioDecodeException("错误的WebSocket包，错误的Opcode");
             }
-        } else {
-            if (ImPacket.HEARTBEAT_BYTE == firstByte) {
-                buffer.position(initPosition + 1);
-                return heartbeatPacket;
-            }
+            throw new AioDecodeException("错误的WebSocket包，错误的Opcode");
+        }
+
+        if (ImPacket.HEARTBEAT_BYTE == firstByte) {
+            buffer.position(initPosition + 1);
+            return heartbeatPacket;
         }
 
         firstByte = buffer.get();
@@ -267,6 +275,74 @@ public class ImAioServerHandler implements ServerAioHandler {
 
     @Override
     public void handler(Packet packet, ChannelContext channelContext) throws Exception {
+        ImPacket imPacket = (ImPacket) packet;
+        Command command = imPacket.getCommand();
 
+        ChannelStat channelStat = channelContext.stat;
+        if (channelStat.receivedPackets.get() > ImServerStarter.config.getInt("skip-warn-count")) { // 前面几条命令不计入命令桶
+            GroupContext groupContext = channelContext.getGroupContext();
+            ImSessionContext imSessionContext = (ImSessionContext) channelContext.getAttribute();
+            RateLimiterWrap rateLimiterWrap = imSessionContext.getRateLimiterWrap();
+            boolean[] ss = rateLimiterWrap.tryAcquire();
+            String group = "g";
+
+            if (ss[0] == false && ss[1] == false) {
+                LOGGER.error("{} 访问过频繁，本次命令:{}， 将拉黑其IP", channelContext.toString(), command);
+                String text = "<span style='font-size:16px;color:red'>对不起大家，由于我发消息太频繁，已经被服务器拉黑了，大家珍重，管理员心情好，可能会把我从黑名单中清除。</span>";
+
+                ChatRespBody.Builder builder = ChatRespBody.newBuilder();
+                builder.setType(ChatType.CHAT_TYPE_PUBLIC);
+                builder.setText(text);
+                builder.setFromClient(imSessionContext.getClient());
+
+                builder.setGroup(group);
+                builder.setTime(SystemTimer.currTime);
+
+                ChatRespBody chatRespBody = builder.build();
+                WebSocketPacket webSocketPacket = new WebSocketPacket(command, chatRespBody.toByteArray());
+
+                // 发送数据到组
+                Tio.sendToGroup(groupContext, group, webSocketPacket);
+                // 组内拉黑
+                Tio.IpBlacklist.add(groupContext, channelContext.getClientNode().getIp());
+
+                return ;
+            }
+            if (ss[0] == false && ss[1] == true) {
+                LOGGER.error("{} 访问过频繁，本次命令:{}，将警告一次", channelContext.toString(), command);
+
+                Client client = imSessionContext.getClient();
+                String nickname = client.getUser().getNickname();
+                String region = client.getRegion();
+                String ip = client.getIp();
+                String formatUserAgent = ImUtils.formatUserAgent(channelContext);
+
+                int warnCount = rateLimiterWrap.getWarnCount().get();
+                int xx = rateLimiterWrap.getMaxAllWarnCount() - warnCount;
+                String text = "<div>第" + warnCount + "次警告【" + nickname + "】【" + region + "】【" + ip + "】【" + formatUserAgent + "】，还剩" + xx + "次警告机会" + "</div>";
+
+                ChatRespBody.Builder builder = ChatRespBody.newBuilder();
+                builder.setType(ChatType.CHAT_TYPE_PUBLIC);
+                builder.setText(text);
+                builder.setFromClient(UserService.getSysClient());
+
+                builder.setGroup(group);
+                builder.setTime(SystemTimer.currTime);
+
+                ChatRespBody chatRespBody = builder.build();
+                WebSocketPacket webSocketPacket = new WebSocketPacket(command, chatRespBody.toByteArray());
+
+                // 发送数据
+                Tio.sendToGroup(groupContext, group, webSocketPacket);
+
+                return ;
+            }
+        }
+
+        ImBsHandlerIntf imBsHandlerIntf = handlerMap.get(command);
+        if (imBsHandlerIntf != null) {
+            imBsHandlerIntf.handler(imPacket, channelContext);
+        }
+        CommandStat.getCount(command).handled.incrementAndGet();
     }
 }

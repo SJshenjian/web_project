@@ -1,6 +1,8 @@
 package com.haotu369.tio.im.common.http;
 
+import com.haotu369.tio.im.common.ImPacket;
 import com.haotu369.tio.im.common.packets.Command;
+import com.sun.deploy.net.HttpRequest;
 import org.tio.core.intf.Packet;
 
 /**
@@ -8,9 +10,9 @@ import org.tio.core.intf.Packet;
  * @version V1.0
  * @date 2018/10/24
  */
-public class HttpRequestPacket extends Packet {
+public class HttpRequestPacket extends ImPacket {
 
-    public void setCommand(Command commandHandshakeReq) {
+    public HttpRequestPacket() {
 
     }
 }

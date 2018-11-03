@@ -47,6 +47,10 @@ public class WebSocketPacket extends ImPacket {
         super(command);
     }
 
+    public WebSocketPacket(Command command, byte[] wsBody) {
+        super(command, wsBody);
+    }
+
     public boolean isWsEof() {
         return wsEof;
     }
