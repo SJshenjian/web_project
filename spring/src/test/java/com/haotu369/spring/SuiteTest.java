@@ -10,7 +10,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        BeanFactoryTest.class
+        BeanFactoryTest.class,
+        ApplicationContextTest.class
 })
 public class SuiteTest {
 }

@@ -1,4 +1,4 @@
-package com.haotu369.spring.beans.factory;
+package com.haotu369.spring.beans;
 
 /**
  * @author Jian Shen

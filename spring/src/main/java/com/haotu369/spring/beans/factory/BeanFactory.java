@@ -9,7 +9,5 @@ import com.haotu369.spring.beans.BeansDefinition;
  */
 public interface BeanFactory {
 
-    BeansDefinition getBeanDefinition(String id);
-
     Object getBean(String id);
 }

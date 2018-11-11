@@ -1,0 +1,23 @@
+package com.haotu369.spring;
+
+import com.haotu369.service.PetStoreService;
+import com.haotu369.spring.context.ApplicationContext;
+import com.haotu369.spring.context.support.ClassPathApplicationContext;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+
+/**
+ * @author Jian Shen
+ * @version V1.0
+ * @date 2018/11/11
+ */
+public class ApplicationContextTest {
+
+    @Test
+    public void testApplicationContext() {
+        ApplicationContext applicationContext = new ClassPathApplicationContext("petstore-v1.xml");
+        PetStoreService petStoreService = (PetStoreService) applicationContext.getBean("petStore");
+        assertNotNull(petStoreService);
+    }
+}

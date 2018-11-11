@@ -1,6 +1,6 @@
-package com.haotu369.spring.beans.factory.support;
+package com.haotu369.spring.beans.factory;
 
-import com.haotu369.spring.beans.factory.BeansException;
+import com.haotu369.spring.beans.BeansException;
 
 /**
  * @author Jian Shen
