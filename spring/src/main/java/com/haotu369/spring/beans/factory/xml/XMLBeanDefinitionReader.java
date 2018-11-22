@@ -4,6 +4,7 @@ import com.haotu369.spring.beans.BeansDefinition;
 import com.haotu369.spring.beans.factory.BeanDefinitionStoreException;
 import com.haotu369.spring.beans.factory.support.BeanDefinitionRegistry;
 import com.haotu369.spring.beans.factory.support.GenericBeanDefinition;
+import com.haotu369.spring.core.io.Resource;
 import com.haotu369.spring.util.ClassUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -13,6 +14,8 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
+ * SRP单一职责原则
+ *
  * @author Jian Shen
  * @version V1.0
  * @date 2018/11/11
@@ -21,17 +24,16 @@ public class XMLBeanDefinitionReader {
 
     private static final String ID_ATTRIBUTE = "id";
     private static final String CLASS_ATTRIBUTE = "class";
+    private static final String SCOPE_ATTRIBUTE = "scope";
     private BeanDefinitionRegistry beanDefinitionRegistry;
 
     public XMLBeanDefinitionReader(BeanDefinitionRegistry beanDefinitionRegistry) {
         this.beanDefinitionRegistry = beanDefinitionRegistry;
     }
 
-    public void loadBeanDefinition(String file) {
-        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
-
+    public void loadBeanDefinition(Resource resource) {
         try(
-                InputStream inputStream = classLoader.getResourceAsStream(file);
+                InputStream inputStream = resource.getInputStream();
         ) {
             SAXReader saxReader = new SAXReader();
             Document document = saxReader.read(inputStream);
@@ -41,11 +43,15 @@ public class XMLBeanDefinitionReader {
                 Element element = elements.get(i);
                 String beanId = element.attributeValue(ID_ATTRIBUTE);
                 String className = element.attributeValue(CLASS_ATTRIBUTE);
+                String scope = element.attributeValue(SCOPE_ATTRIBUTE);
                 BeansDefinition beansDefinition = new GenericBeanDefinition(beanId, className);
+                if (scope != null) {
+                    beansDefinition.setScope(scope);
+                }
                 beanDefinitionRegistry.registryBeanDefinition(beanId, beansDefinition);
             }
         } catch (Exception e) {
-            throw new BeanDefinitionStoreException("parsing '" + file + "' fail");
+            throw new BeanDefinitionStoreException("IOException parsing XML document from '" + resource.getDescription() + "' fail");
         }
     }
 }

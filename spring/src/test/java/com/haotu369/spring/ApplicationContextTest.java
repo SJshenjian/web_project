@@ -2,7 +2,8 @@ package com.haotu369.spring;
 
 import com.haotu369.service.PetStoreService;
 import com.haotu369.spring.context.ApplicationContext;
-import com.haotu369.spring.context.support.ClassPathApplicationContext;
+import com.haotu369.spring.context.support.ClassPathXmlApplicationContext;
+import com.haotu369.spring.context.support.FileSystemXmlApplicationContext;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
@@ -15,8 +16,16 @@ import static org.junit.Assert.assertNotNull;
 public class ApplicationContextTest {
 
     @Test
-    public void testApplicationContext() {
-        ApplicationContext applicationContext = new ClassPathApplicationContext("petstore-v1.xml");
+    public void testClassPathXmlApplicationContext() {
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("petstore-v1.xml");
+        PetStoreService petStoreService = (PetStoreService) applicationContext.getBean("petStore");
+        assertNotNull(petStoreService);
+    }
+
+    @Test
+    public void testFileSystemXmlApplicationContext() {
+        ApplicationContext applicationContext = new FileSystemXmlApplicationContext("E:\\Project\\java\\web-project\\spring\\src\\" +
+        "main\\resources\\petstore-v1.xml");
         PetStoreService petStoreService = (PetStoreService) applicationContext.getBean("petStore");
         assertNotNull(petStoreService);
     }
