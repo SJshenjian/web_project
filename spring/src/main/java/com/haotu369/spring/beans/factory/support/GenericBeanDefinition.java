@@ -1,6 +1,10 @@
 package com.haotu369.spring.beans.factory.support;
 
 import com.haotu369.spring.beans.BeansDefinition;
+import com.haotu369.spring.beans.PropertyValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jian Shen
@@ -14,6 +18,7 @@ public class GenericBeanDefinition implements BeansDefinition {
     private boolean singleton = true;
     private boolean prototype = false;
     private String scope = SCOPE_DEFAULT;
+    private List<PropertyValue> propertyValues = new ArrayList<>();
 
     public GenericBeanDefinition(String id, String className) {
         this.id = id;
@@ -45,5 +50,10 @@ public class GenericBeanDefinition implements BeansDefinition {
     @Override
     public String getBeanClassName() {
         return className;
+    }
+
+    @Override
+    public List<PropertyValue> getPropertyValues() {
+        return propertyValues;
     }
 }

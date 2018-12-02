@@ -1,4 +1,4 @@
-package com.haotu369.spring;
+package com.haotu369.spring.v1;
 
 import com.haotu369.service.PetStoreService;
 import com.haotu369.spring.context.ApplicationContext;

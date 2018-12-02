@@ -1,5 +1,7 @@
 package com.haotu369.spring.beans;
 
+import java.util.List;
+
 /**
  * @author Jian Shen
  * @version V1.0
@@ -18,4 +20,5 @@ public interface BeansDefinition {
     void setScope(String scope);
 
     String getBeanClassName();
+    List<PropertyValue> getPropertyValues();
 }
