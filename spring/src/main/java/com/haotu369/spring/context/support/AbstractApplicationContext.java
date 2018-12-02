@@ -22,10 +22,15 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     public abstract Resource getResourceByPath(String path);
 
     public AbstractApplicationContext(String configLocation) {
+        this(configLocation, ClassUtils.getDefaultClassLoader());
+    }
+
+    public AbstractApplicationContext(String configLocation, ClassLoader classLoader) {
         defaultBeanFactory = new DefaultBeanFactory();
         xmlBeanDefinitionReader = new XMLBeanDefinitionReader(defaultBeanFactory);
         Resource resource = getResourceByPath(configLocation);
         xmlBeanDefinitionReader.loadBeanDefinition(resource);
+        defaultBeanFactory.setBeanClassLoader(this.getBeanClassLoader());
     }
 
     @Override

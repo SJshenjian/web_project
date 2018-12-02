@@ -3,7 +3,6 @@ package com.haotu369.spring;
 import com.haotu369.spring.core.io.ClassPathResource;
 import com.haotu369.spring.core.io.FileSystemResource;
 import com.haotu369.spring.core.io.Resource;
-import jdk.internal.util.xml.impl.Input;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,7 +31,7 @@ public class ResourceTest {
 
     @Test
     public void testFileSystemResource() {
-        Resource resource = new FileSystemResource("E:\\Project\\java\\web-project\\spring\\src\\" +
+        Resource resource = new FileSystemResource("src\\" +
                 "main\\resources\\petstore-v1.xml");
         try(
                 InputStream inputStream = resource.getInputStream();
