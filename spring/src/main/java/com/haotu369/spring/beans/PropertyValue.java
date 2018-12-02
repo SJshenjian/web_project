@@ -1,5 +1,7 @@
 package com.haotu369.spring.beans;
 
+import com.haotu369.spring.beans.factory.support.BeanDefinitionValueResolver;
+
 /**
  * @author Jian Shen
  * @version V1.0
@@ -35,9 +37,5 @@ public class PropertyValue {
 
     public synchronized Object getConvertedValue() {
         return convertedValue;
-    }
-
-    public synchronized void setConvertedValue(Object convertedValue) {
-        this.convertedValue = convertedValue;
     }
 }

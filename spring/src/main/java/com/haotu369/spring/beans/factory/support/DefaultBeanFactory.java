@@ -1,10 +1,17 @@
 package com.haotu369.spring.beans.factory.support;
 
 import com.haotu369.spring.beans.BeansDefinition;
+import com.haotu369.spring.beans.PropertyValue;
 import com.haotu369.spring.beans.factory.BeanCreationException;
 import com.haotu369.spring.beans.factory.config.ConfigurableBeanFactory;
 import com.haotu369.spring.util.ClassUtils;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -60,12 +67,47 @@ public class DefaultBeanFactory extends  DefaultSingletonBeanRegistry implements
     }
 
     private Object createBean(BeansDefinition beansDefinition) {
+        // 实例化bean
+        Object bean = instantiateBean(beansDefinition);
+        // 设置属性
+        populateBean(beansDefinition, bean);
+        return bean;
+    }
+
+    private Object instantiateBean(BeansDefinition beansDefinition) {
         String className = beansDefinition.getBeanClassName();
         try {
             Class clazz = this.getBeanClassLoader().loadClass(className);
             return clazz.newInstance();
         } catch (Exception e) {
             throw new BeanCreationException("Creating bean for '" + className + "' fail");
+        }
+    }
+
+    private void populateBean(BeansDefinition beansDefinition, Object bean) {
+        List<PropertyValue> propertyValues = beansDefinition.getPropertyValues();
+        if (propertyValues == null || propertyValues.isEmpty()) {
+            return ;
+        }
+        try {
+            for (PropertyValue propertyValue : propertyValues) {
+                String propName = propertyValue.getName();
+                Object originValue = propertyValue.getValue();
+                BeanDefinitionValueResolver resolver = new BeanDefinitionValueResolver(this);
+                Object resolvedValue = resolver.resolveValueIfNecessary(originValue);
+
+                // 通过JDK javabean相关方法实现注入
+                BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
+                PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
+                for (PropertyDescriptor descriptor : descriptors) {
+                    if (propName.equals(descriptor.getName())) {
+                        descriptor.getWriteMethod().invoke(bean, resolvedValue);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new BeanCreationException("Failed to obtain BeanInfo from " + bean.getClass());
         }
     }
 }

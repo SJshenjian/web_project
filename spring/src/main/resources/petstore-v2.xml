@@ -6,6 +6,7 @@
     <bean id="petStoreService" class="com.haotu369.service.v2.PetStoreService">
         <property name="accountDao" ref="accountDao"></property>
         <property name="itemDao" ref="itemDao"></property>
+        <property name="author" value="Jian Shen"></property>
     </bean>
 
     <bean id="accountDao" class="com.haotu369.dao.v2.AccountDao"></bean>
