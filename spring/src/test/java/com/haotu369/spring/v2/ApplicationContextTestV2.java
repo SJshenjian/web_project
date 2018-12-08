@@ -24,5 +24,6 @@ public class ApplicationContextTestV2 {
 
         assertTrue(petStoreService.getAccountDao() instanceof AccountDao);
         assertEquals("Jian Shen", petStoreService.getAuthor());
+        assertEquals(2, petStoreService.getVersion());
     }
 }

@@ -3,9 +3,7 @@ package com.haotu369.spring;
 import com.haotu369.spring.v1.ApplicationContextTest;
 import com.haotu369.spring.v1.BeanFactoryTest;
 import com.haotu369.spring.v1.ResourceTest;
-import com.haotu369.spring.v2.ApplicationContextTestV2;
-import com.haotu369.spring.v2.BeanDefinitionTestV2;
-import com.haotu369.spring.v2.BeanDefinitionValueResolverTest;
+import com.haotu369.spring.v2.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,7 +19,10 @@ import org.junit.runners.Suite;
         ResourceTest.class,
         BeanDefinitionTestV2.class,
         BeanDefinitionValueResolverTest.class,
+        CustomEditorTest.class,
+        TypeConverterTest.class,
         ApplicationContextTestV2.class
 })
 public class SuiteTest {
+
 }

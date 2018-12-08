@@ -2,6 +2,8 @@ package com.haotu369.spring.beans.factory.support;
 
 import com.haotu369.spring.beans.BeansDefinition;
 import com.haotu369.spring.beans.PropertyValue;
+import com.haotu369.spring.beans.SimpleTypeConverter;
+import com.haotu369.spring.beans.TypeConverter;
 import com.haotu369.spring.beans.factory.BeanCreationException;
 import com.haotu369.spring.beans.factory.config.ConfigurableBeanFactory;
 import com.haotu369.spring.util.ClassUtils;
@@ -89,11 +91,12 @@ public class DefaultBeanFactory extends  DefaultSingletonBeanRegistry implements
         if (propertyValues == null || propertyValues.isEmpty()) {
             return ;
         }
+        BeanDefinitionValueResolver resolver = new BeanDefinitionValueResolver(this);
+        TypeConverter converter = new SimpleTypeConverter();
         try {
             for (PropertyValue propertyValue : propertyValues) {
                 String propName = propertyValue.getName();
                 Object originValue = propertyValue.getValue();
-                BeanDefinitionValueResolver resolver = new BeanDefinitionValueResolver(this);
                 Object resolvedValue = resolver.resolveValueIfNecessary(originValue);
 
                 // 通过JDK javabean相关方法实现注入
@@ -101,7 +104,8 @@ public class DefaultBeanFactory extends  DefaultSingletonBeanRegistry implements
                 PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
                 for (PropertyDescriptor descriptor : descriptors) {
                     if (propName.equals(descriptor.getName())) {
-                        descriptor.getWriteMethod().invoke(bean, resolvedValue);
+                        Object convertedValue = converter.convertIfNecessary(resolvedValue, descriptor.getPropertyType());
+                        descriptor.getWriteMethod().invoke(bean, convertedValue);
                         break;
                     }
                 }

@@ -7,6 +7,7 @@
         <property name="accountDao" ref="accountDao"></property>
         <property name="itemDao" ref="itemDao"></property>
         <property name="author" value="Jian Shen"></property>
+        <property name="version" value="2"></property>
     </bean>
 
     <bean id="accountDao" class="com.haotu369.dao.v2.AccountDao"></bean>
