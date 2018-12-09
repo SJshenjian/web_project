@@ -32,7 +32,7 @@ public class ResourceTestV1 {
     @Test
     public void testFileSystemResource() {
         Resource resource = new FileSystemResource("src\\" +
-                "main\\resources\\petstore-v1.xml");
+                "test\\resources\\petstore-v1.xml");
         try(
                 InputStream inputStream = resource.getInputStream();
         ) {

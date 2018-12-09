@@ -1,6 +1,6 @@
 package com.haotu369.spring.v1;
 
-import com.haotu369.service.PetStoreService;
+import com.haotu369.service.v1.PetStoreService;
 import com.haotu369.spring.beans.BeansDefinition;
 import com.haotu369.spring.beans.factory.BeanCreationException;
 import com.haotu369.spring.beans.factory.BeanDefinitionStoreException;
@@ -39,7 +39,7 @@ public class BeanFactoryTestV1 {
         assertFalse(definition.isPrototype());
         assertEquals(BeansDefinition.SCOPE_DEFAULT, definition.getScope());
 
-        assertEquals("com.haotu369.service.PetStoreService", className);
+        assertEquals("com.haotu369.service.v1.PetStoreService", className);
 
         PetStoreService petStoreService = (PetStoreService) factory.getBean("petStore");
         assertNotNull(petStoreService);

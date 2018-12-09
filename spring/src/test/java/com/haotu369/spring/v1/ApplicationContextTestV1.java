@@ -1,6 +1,6 @@
 package com.haotu369.spring.v1;
 
-import com.haotu369.service.PetStoreService;
+import com.haotu369.service.v1.PetStoreService;
 import com.haotu369.spring.context.ApplicationContext;
 import com.haotu369.spring.context.support.ClassPathXmlApplicationContext;
 import com.haotu369.spring.context.support.FileSystemXmlApplicationContext;
@@ -25,7 +25,7 @@ public class ApplicationContextTestV1 {
     @Test
     public void testFileSystemXmlApplicationContext() {
         ApplicationContext applicationContext = new FileSystemXmlApplicationContext("src\\" +
-        "main\\resources\\petstore-v1.xml");
+        "test\\resources\\petstore-v1.xml");
         PetStoreService petStoreService = (PetStoreService) applicationContext.getBean("petStore");
         assertNotNull(petStoreService);
     }

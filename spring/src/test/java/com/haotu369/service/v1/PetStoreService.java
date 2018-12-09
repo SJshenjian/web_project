@@ -1,4 +1,4 @@
-package com.haotu369.service;
+package com.haotu369.service.v1;
 
 /**
  * @author Jian Shen
