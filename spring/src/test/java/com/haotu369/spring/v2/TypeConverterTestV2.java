@@ -14,7 +14,7 @@ import static org.junit.Assert.fail;
  * @version V1.0
  * @date 2018/12/6
  */
-public class TypeConverterTest {
+public class TypeConverterTestV2 {
 
     @Test
     public void testConvertStringToInt() {

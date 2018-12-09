@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  * @version V1.0
  * @date 2018/12/5
  */
-public class CustomEditorTest {
+public class CustomEditorTestV2 {
 
     @Test
     public void testCustomNumberEditor() {

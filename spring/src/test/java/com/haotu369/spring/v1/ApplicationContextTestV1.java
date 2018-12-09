@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNotNull;
  * @version V1.0
  * @date 2018/11/11
  */
-public class ApplicationContextTest {
+public class ApplicationContextTestV1 {
 
     @Test
     public void testClassPathXmlApplicationContext() {

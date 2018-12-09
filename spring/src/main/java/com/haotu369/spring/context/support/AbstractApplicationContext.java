@@ -7,7 +7,8 @@ import com.haotu369.spring.core.io.Resource;
 import com.haotu369.spring.util.ClassUtils;
 
 /**
- * 模板方法
+ * 设计模式：模板方法
+ * 设计原则：开放关闭原则（对修改关闭，对扩展开放）
  *
  * @author Jian Shen
  * @version V1.0

@@ -1,8 +1,9 @@
 package com.haotu369.spring;
 
-import com.haotu369.spring.v1.ApplicationContextTest;
-import com.haotu369.spring.v1.BeanFactoryTest;
-import com.haotu369.spring.v1.ResourceTest;
+import com.haotu369.spring.v1.ApplicationContextTestV1;
+import com.haotu369.spring.v1.BeanFactoryTestV1;
+import com.haotu369.spring.v1.ResourceTestV1;
+import com.haotu369.spring.v1.SuiteTestV1;
 import com.haotu369.spring.v2.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -14,14 +15,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        BeanFactoryTest.class,
-        ApplicationContextTest.class,
-        ResourceTest.class,
-        BeanDefinitionTestV2.class,
-        BeanDefinitionValueResolverTest.class,
-        CustomEditorTest.class,
-        TypeConverterTest.class,
-        ApplicationContextTestV2.class
+        SuiteTestV1.class,
+        SuiteTestV2.class
 })
 public class SuiteTest {
 

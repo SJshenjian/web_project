@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  * @version V1.0
  * @date 2018/12/2
  */
-public class BeanDefinitionValueResolverTest {
+public class BeanDefinitionValueResolverTestV2 {
 
     @Test
     public void testResolveRuntimeBeanReference() {

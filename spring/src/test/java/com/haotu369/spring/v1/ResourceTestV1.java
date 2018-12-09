@@ -14,7 +14,7 @@ import java.io.InputStream;
  * @version V1.0
  * @date 2018/11/16
  */
-public class ResourceTest {
+public class ResourceTestV1 {
 
     @Test
     public void testClassPathResource() {

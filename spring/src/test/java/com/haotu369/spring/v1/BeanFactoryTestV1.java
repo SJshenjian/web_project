@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  * @version V1.0
  * @date 2018/10/28
  */
-public class BeanFactoryTest {
+public class BeanFactoryTestV1 {
     private DefaultBeanFactory factory;
     private XMLBeanDefinitionReader xmlBeanDefinitionReader;
 
