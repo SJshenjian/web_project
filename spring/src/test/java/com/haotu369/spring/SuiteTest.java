@@ -5,6 +5,7 @@ import com.haotu369.spring.v1.BeanFactoryTestV1;
 import com.haotu369.spring.v1.ResourceTestV1;
 import com.haotu369.spring.v1.SuiteTestV1;
 import com.haotu369.spring.v2.*;
+import com.haotu369.spring.v3.SuiteTestV3;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -16,7 +17,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         SuiteTestV1.class,
-        SuiteTestV2.class
+        SuiteTestV2.class,
+        SuiteTestV3.class
 })
 public class SuiteTest {
 

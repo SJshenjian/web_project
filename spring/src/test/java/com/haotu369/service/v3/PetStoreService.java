@@ -1,7 +1,7 @@
 package com.haotu369.service.v3;
 
-import com.haotu369.dao.v2.AccountDao;
-import com.haotu369.dao.v2.ItemDao;
+import com.haotu369.dao.AccountDao;
+import com.haotu369.dao.ItemDao;
 
 /**
  * @author Jian Shen
@@ -29,14 +29,6 @@ public class PetStoreService {
         this.itemDao = itemDao;
         this.version = version;
     }
-
-    // TODO 最佳匹配
-    public PetStoreService(AccountDao accountDao, ItemDao itemDao, String author) {
-        this.accountDao = accountDao;
-        this.itemDao = itemDao;
-        this.author = author;
-    }
-
 
     public AccountDao getAccountDao() {
         return accountDao;

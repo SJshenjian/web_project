@@ -1,6 +1,7 @@
 package com.haotu369.spring.beans.factory.support;
 
 import com.haotu369.spring.beans.BeansDefinition;
+import com.haotu369.spring.beans.ConstructorArgument;
 import com.haotu369.spring.beans.PropertyValue;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class GenericBeanDefinition implements BeansDefinition {
     private boolean prototype = false;
     private String scope = SCOPE_DEFAULT;
     private List<PropertyValue> propertyValues = new ArrayList<>();
+    private ConstructorArgument constructorArgument = new ConstructorArgument();
 
     public GenericBeanDefinition(String id, String className) {
         this.id = id;
@@ -48,6 +50,11 @@ public class GenericBeanDefinition implements BeansDefinition {
     }
 
     @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
     public String getBeanClassName() {
         return className;
     }
@@ -55,5 +62,15 @@ public class GenericBeanDefinition implements BeansDefinition {
     @Override
     public List<PropertyValue> getPropertyValues() {
         return propertyValues;
+    }
+
+    @Override
+    public ConstructorArgument getConstructorArgument() {
+        return constructorArgument;
+    }
+
+    @Override
+    public boolean hasConstructorArgumentValues() {
+        return !constructorArgument.isEmpty();
     }
 }

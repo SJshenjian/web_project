@@ -19,6 +19,9 @@ public interface BeansDefinition {
     String getScope();
     void setScope(String scope);
 
+    String getId();
     String getBeanClassName();
     List<PropertyValue> getPropertyValues();
+    ConstructorArgument getConstructorArgument();
+    boolean hasConstructorArgumentValues();
 }

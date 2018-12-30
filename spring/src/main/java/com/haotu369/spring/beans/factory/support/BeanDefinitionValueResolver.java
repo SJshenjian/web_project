@@ -1,5 +1,7 @@
 package com.haotu369.spring.beans.factory.support;
 
+import com.haotu369.spring.beans.BeansDefinition;
+import com.haotu369.spring.beans.factory.BeanFactory;
 import com.haotu369.spring.beans.factory.config.RuntimeBeanReference;
 import com.haotu369.spring.beans.factory.config.TypedStringValue;
 
@@ -10,9 +12,9 @@ import com.haotu369.spring.beans.factory.config.TypedStringValue;
  */
 public class BeanDefinitionValueResolver {
 
-    private DefaultBeanFactory factory;
+    private BeanFactory factory;
 
-    public BeanDefinitionValueResolver(DefaultBeanFactory factory) {
+    public BeanDefinitionValueResolver(BeanFactory factory) {
         this.factory = factory;
     }
 

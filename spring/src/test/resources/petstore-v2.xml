@@ -10,7 +10,7 @@
         <property name="version" value="2"></property>
     </bean>
 
-    <bean id="accountDao" class="com.haotu369.dao.v2.AccountDao"></bean>
+    <bean id="accountDao" class="com.haotu369.dao.AccountDao"></bean>
 
-    <bean id="itemDao" class="com.haotu369.dao.v2.ItemDao"></bean>
+    <bean id="itemDao" class="com.haotu369.dao.ItemDao"></bean>
 </beans>

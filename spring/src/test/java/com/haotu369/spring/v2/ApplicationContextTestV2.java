@@ -1,6 +1,6 @@
 package com.haotu369.spring.v2;
 
-import com.haotu369.dao.v2.AccountDao;
+import com.haotu369.dao.AccountDao;
 import com.haotu369.service.v2.PetStoreService;
 import com.haotu369.spring.context.ApplicationContext;
 import com.haotu369.spring.context.support.ClassPathXmlApplicationContext;

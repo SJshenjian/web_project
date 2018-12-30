@@ -1,6 +1,7 @@
 package com.haotu369.spring.beans.factory.xml;
 
 import com.haotu369.spring.beans.BeansDefinition;
+import com.haotu369.spring.beans.ConstructorArgument;
 import com.haotu369.spring.beans.PropertyValue;
 import com.haotu369.spring.beans.factory.BeanDefinitionStoreException;
 import com.haotu369.spring.beans.factory.config.RuntimeBeanReference;
@@ -33,14 +34,17 @@ public class XMLBeanDefinitionReader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLBeanDefinitionReader.class);
 
-    private static final String ID_ATTRIBUTE = "id";
-    private static final String CLASS_ATTRIBUTE = "class";
-    private static final String SCOPE_ATTRIBUTE = "scope";
+    public static final String ID_ATTRIBUTE = "id";
+    public static final String CLASS_ATTRIBUTE = "class";
+    public static final String SCOPE_ATTRIBUTE = "scope";
 
-    private static final String PROPERTY_ATTRIBUTE = "property";
-    private static final String NAME_ATTRIBUTE = "name";
-    private static final String REF_ATTRIBUTE = "ref";
-    private static final String VALUE_ATTRIBUTE = "value";
+    public static final String PROPERTY_ELEMENT = "property";
+    public static final String NAME_ATTRIBUTE = "name";
+    public static final String REF_ATTRIBUTE = "ref";
+    public static final String VALUE_ATTRIBUTE = "value";
+
+    public static final String CONSTRUCTOR_ARG_ELEMENT = "constructor-arg";
+    public static final String TYPE_ATTRIBUTE = "type";
 
     private BeanDefinitionRegistry beanDefinitionRegistry;
 
@@ -68,6 +72,8 @@ public class XMLBeanDefinitionReader {
                 // 解析属性
                 parsePropertyElement(element, beansDefinition);
 
+                parseConstructorArgElement(element, beansDefinition);
+
                 beanDefinitionRegistry.registryBeanDefinition(beanId, beansDefinition);
             }
         } catch (Exception e) {
@@ -76,7 +82,7 @@ public class XMLBeanDefinitionReader {
     }
 
     public void parsePropertyElement(Element element, BeansDefinition beansDefinition) {
-        Iterator iterator = element.elementIterator(PROPERTY_ATTRIBUTE);
+        Iterator iterator = element.elementIterator(PROPERTY_ELEMENT);
         while (iterator.hasNext()) {
             Element propElement = (Element) iterator.next();
             String propertyName = propElement.attributeValue(NAME_ATTRIBUTE);
@@ -88,6 +94,24 @@ public class XMLBeanDefinitionReader {
             Object value = parsePropertyValue(propElement, beansDefinition, propertyName);
             PropertyValue propertyValue = new PropertyValue(propertyName, value);
             beansDefinition.getPropertyValues().add(propertyValue);
+        }
+    }
+
+    public void parseConstructorArgElement(Element element, BeansDefinition beansDefinition) {
+        Iterator iterator = element.elementIterator(CONSTRUCTOR_ARG_ELEMENT);
+        while (iterator.hasNext()) {
+            Element constructorArgElement = (Element) iterator.next();
+            String typeAttr = constructorArgElement.attributeValue(TYPE_ATTRIBUTE);
+            String nameAttr = constructorArgElement.attributeValue(NAME_ATTRIBUTE);
+            Object value = parsePropertyValue(constructorArgElement, beansDefinition, null);
+            ConstructorArgument.ValueHolder valueHolder = new ConstructorArgument.ValueHolder(value);
+            if (typeAttr != null) {
+                valueHolder.setType(typeAttr);
+            }
+            if (nameAttr != null) {
+                valueHolder.setName(nameAttr);
+            }
+            beansDefinition.getConstructorArgument().addArgumentValue(valueHolder);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.haotu369.spring.v2;
 
-import com.haotu369.dao.v2.AccountDao;
+import com.haotu369.dao.AccountDao;
 import com.haotu369.spring.beans.factory.config.RuntimeBeanReference;
 import com.haotu369.spring.beans.factory.config.TypedStringValue;
 import com.haotu369.spring.beans.factory.support.BeanDefinitionValueResolver;
