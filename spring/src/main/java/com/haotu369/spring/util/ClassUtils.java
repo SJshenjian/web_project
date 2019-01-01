@@ -10,6 +10,9 @@ import java.util.Map;
  */
 public class ClassUtils {
 
+    private static final char PACKAGE_SEPARATOR = '.';
+    private static final char PATH_SEPARATOR = '/';
+
     private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<>(8);
     private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = new IdentityHashMap<>(8);
 
@@ -73,5 +76,10 @@ public class ClassUtils {
             }
         }
         return false;
+    }
+
+    public static String convertClassNameToResourcePath(String className) {
+        Assert.notNull(className, "Class name must not be null");
+        return className.replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);
     }
 }
