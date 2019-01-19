@@ -12,7 +12,7 @@ import java.io.IOException;
  * @version V1.0
  * @date 2018/12/31
  */
-public class PackageResourceLoaderTest {
+public class PackageResourceLoaderTestV4 {
 
     @Test
     public void testPackageResourceLoader() throws IOException {
