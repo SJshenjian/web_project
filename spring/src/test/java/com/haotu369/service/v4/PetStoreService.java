@@ -9,7 +9,7 @@ import com.haotu369.spring.steretype.Component;
  * @version V1.0
  * @date 2018/12/31
  */
-@Component(value = "petStore")
+@Component("petStore")
 public class PetStoreService {
 
     private AccountDao accountDao;

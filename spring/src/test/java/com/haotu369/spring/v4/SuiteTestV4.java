@@ -12,6 +12,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         PackageResourceLoaderTestV4.class,
         ClassReaderTestV4.class,
+        MetadataReaderTestV4.class,
         ApplicationContextTestV4.class
 })
 public class SuiteTestV4 {
