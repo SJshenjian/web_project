@@ -1,6 +1,5 @@
 package com.haotu369.spring.beans.factory.support;
 
-import com.haotu369.spring.beans.BeansDefinition;
 import com.haotu369.spring.beans.factory.BeanFactory;
 import com.haotu369.spring.beans.factory.config.RuntimeBeanReference;
 import com.haotu369.spring.beans.factory.config.TypedStringValue;

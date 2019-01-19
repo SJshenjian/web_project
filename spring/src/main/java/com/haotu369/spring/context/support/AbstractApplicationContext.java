@@ -1,7 +1,7 @@
 package com.haotu369.spring.context.support;
 
 import com.haotu369.spring.beans.factory.support.DefaultBeanFactory;
-import com.haotu369.spring.beans.factory.xml.XMLBeanDefinitionReader;
+import com.haotu369.spring.beans.factory.xml.XmlBeanDefinitionReader;
 import com.haotu369.spring.context.ApplicationContext;
 import com.haotu369.spring.core.io.Resource;
 import com.haotu369.spring.util.ClassUtils;
@@ -17,7 +17,7 @@ import com.haotu369.spring.util.ClassUtils;
 public abstract class AbstractApplicationContext implements ApplicationContext {
 
     private DefaultBeanFactory defaultBeanFactory;
-    private XMLBeanDefinitionReader xmlBeanDefinitionReader;
+    private XmlBeanDefinitionReader xmlBeanDefinitionReader;
     private ClassLoader classLoader;
 
     public abstract Resource getResourceByPath(String path);
@@ -28,9 +28,9 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 
     public AbstractApplicationContext(String configLocation, ClassLoader classLoader) {
         defaultBeanFactory = new DefaultBeanFactory();
-        xmlBeanDefinitionReader = new XMLBeanDefinitionReader(defaultBeanFactory);
+        xmlBeanDefinitionReader = new XmlBeanDefinitionReader(defaultBeanFactory);
         Resource resource = getResourceByPath(configLocation);
-        xmlBeanDefinitionReader.loadBeanDefinition(resource);
+        xmlBeanDefinitionReader.loadBeanDefinitions(resource);
         defaultBeanFactory.setBeanClassLoader(this.getBeanClassLoader());
     }
 

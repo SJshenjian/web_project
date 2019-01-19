@@ -12,6 +12,11 @@ public class ClassUtils {
 
     private static final char PACKAGE_SEPARATOR = '.';
     private static final char PATH_SEPARATOR = '/';
+    /** The inner class separator character: '$' */
+    private static final char INNER_CLASS_SEPARATOR = '$';
+
+    /** The CGLIB class separator: "$$" */
+    public static final String CGLIB_CLASS_SEPARATOR = "$$";
 
     private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<>(8);
     private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = new IdentityHashMap<>(8);
@@ -86,5 +91,16 @@ public class ClassUtils {
     public static String convertResourcePathToClassName(String path) {
         Assert.notNull(path, "path name must not be null");
         return path.replace(PATH_SEPARATOR, PACKAGE_SEPARATOR);
+    }
+
+    public static String getShortName(String className) {
+        int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR);
+        int nameEndIndex = className.indexOf(CGLIB_CLASS_SEPARATOR);
+        if (nameEndIndex == -1) {
+            nameEndIndex = className.length();
+        }
+        String shortName = className.substring(lastDotIndex + 1, nameEndIndex);
+        shortName = shortName.replace(INNER_CLASS_SEPARATOR, PACKAGE_SEPARATOR);
+        return shortName;
     }
 }

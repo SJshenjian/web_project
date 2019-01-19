@@ -13,6 +13,8 @@ import org.junit.runners.Suite;
         PackageResourceLoaderTestV4.class,
         ClassReaderTestV4.class,
         MetadataReaderTestV4.class,
+        ClassPathBeanDefinitionScannerTestV4.class,
+        XmlBeanDefinitionReaderTestV4.class,
         ApplicationContextTestV4.class
 })
 public class SuiteTestV4 {

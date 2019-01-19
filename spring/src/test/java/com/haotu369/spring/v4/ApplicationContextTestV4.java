@@ -17,7 +17,7 @@ public class ApplicationContextTestV4 {
     public void testGetBeanProperty() {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("petstore-v4.xml");
 
-        PetStoreService petStoreService = (PetStoreService) applicationContext.getBean("petStoreService");
+        PetStoreService petStoreService = (PetStoreService) applicationContext.getBean("petStore");
         Assert.assertNotNull(petStoreService);
     }
 }

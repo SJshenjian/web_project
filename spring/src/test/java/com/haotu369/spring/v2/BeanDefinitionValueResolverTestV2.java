@@ -5,7 +5,7 @@ import com.haotu369.spring.beans.factory.config.RuntimeBeanReference;
 import com.haotu369.spring.beans.factory.config.TypedStringValue;
 import com.haotu369.spring.beans.factory.support.BeanDefinitionValueResolver;
 import com.haotu369.spring.beans.factory.support.DefaultBeanFactory;
-import com.haotu369.spring.beans.factory.xml.XMLBeanDefinitionReader;
+import com.haotu369.spring.beans.factory.xml.XmlBeanDefinitionReader;
 import com.haotu369.spring.core.io.ClassPathResource;
 import org.junit.Test;
 
@@ -21,8 +21,8 @@ public class BeanDefinitionValueResolverTestV2 {
     @Test
     public void testResolveRuntimeBeanReference() {
         DefaultBeanFactory factory = new DefaultBeanFactory();
-        XMLBeanDefinitionReader reader = new XMLBeanDefinitionReader(factory);
-        reader.loadBeanDefinition(new ClassPathResource("petstore-v2.xml"));
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
+        reader.loadBeanDefinitions(new ClassPathResource("petstore-v2.xml"));
 
         BeanDefinitionValueResolver resolver = new BeanDefinitionValueResolver(factory);
         RuntimeBeanReference reference = new RuntimeBeanReference("accountDao");

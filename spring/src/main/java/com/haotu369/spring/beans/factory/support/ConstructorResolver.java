@@ -22,7 +22,7 @@ public class ConstructorResolver {
         this.beanFactory = beanFactory;
     }
 
-    public Object autowireConstructor(final BeansDefinition definition) {
+    public Object autowireConstructor(final BeanDefinition definition) {
         Class<?> beanClass;
         Constructor<?> constructorToUse = null;
 

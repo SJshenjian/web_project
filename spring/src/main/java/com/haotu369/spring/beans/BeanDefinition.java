@@ -7,7 +7,7 @@ import java.util.List;
  * @version V1.0
  * @date 2018/10/28
  */
-public interface BeansDefinition {
+public interface BeanDefinition {
 
     static final String SCOPE_SINGLETON = "singleton";
     static final String SCOPE_PROTOTYPE = "prototype";
@@ -20,6 +20,7 @@ public interface BeansDefinition {
     void setScope(String scope);
 
     String getId();
+    void setBeanClassName(String beanClassName);
     String getBeanClassName();
     List<PropertyValue> getPropertyValues();
     ConstructorArgument getConstructorArgument();

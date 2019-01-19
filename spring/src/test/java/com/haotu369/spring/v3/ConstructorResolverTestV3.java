@@ -2,10 +2,10 @@ package com.haotu369.spring.v3;
 
 import com.haotu369.dao.AccountDao;
 import com.haotu369.service.v3.PetStoreService;
-import com.haotu369.spring.beans.BeansDefinition;
+import com.haotu369.spring.beans.BeanDefinition;
 import com.haotu369.spring.beans.factory.support.ConstructorResolver;
 import com.haotu369.spring.beans.factory.support.DefaultBeanFactory;
-import com.haotu369.spring.beans.factory.xml.XMLBeanDefinitionReader;
+import com.haotu369.spring.beans.factory.xml.XmlBeanDefinitionReader;
 import com.haotu369.spring.core.io.ClassPathResource;
 import org.junit.Test;
 
@@ -22,10 +22,10 @@ public class ConstructorResolverTestV3 {
     @Test
     public void testAutowireConstructor() {
         DefaultBeanFactory factory = new DefaultBeanFactory();
-        XMLBeanDefinitionReader reader = new XMLBeanDefinitionReader(factory);
-        reader.loadBeanDefinition(new ClassPathResource("petstore-v3.xml"));
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
+        reader.loadBeanDefinitions(new ClassPathResource("petstore-v3.xml"));
 
-        BeansDefinition definition = factory.getBeanDefinition("petStoreServiceOne");
+        BeanDefinition definition = factory.getBeanDefinition("petStoreServiceOne");
 
         ConstructorResolver resolver = new ConstructorResolver(factory);
         PetStoreService petStoreServiceOne = (PetStoreService) resolver.autowireConstructor(definition);

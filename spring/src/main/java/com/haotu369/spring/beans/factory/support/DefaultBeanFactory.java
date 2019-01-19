@@ -1,6 +1,6 @@
 package com.haotu369.spring.beans.factory.support;
 
-import com.haotu369.spring.beans.BeansDefinition;
+import com.haotu369.spring.beans.BeanDefinition;
 import com.haotu369.spring.beans.PropertyValue;
 import com.haotu369.spring.beans.SimpleTypeConverter;
 import com.haotu369.spring.beans.TypeConverter;
@@ -9,10 +9,8 @@ import com.haotu369.spring.beans.factory.config.ConfigurableBeanFactory;
 import com.haotu369.spring.util.ClassUtils;
 
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,37 +23,37 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DefaultBeanFactory extends  DefaultSingletonBeanRegistry implements ConfigurableBeanFactory, BeanDefinitionRegistry {
 
     private ClassLoader classLoader;
-    private Map<String, BeansDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
+    private Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
 
     public DefaultBeanFactory() {
     }
 
     @Override
-    public BeansDefinition getBeanDefinition(String id) {
+    public BeanDefinition getBeanDefinition(String id) {
         return beanDefinitionMap.get(id);
     }
 
     @Override
-    public void registryBeanDefinition(String id, BeansDefinition beansDefinition) {
-        this.beanDefinitionMap.put(id, beansDefinition);
+    public void registryBeanDefinition(String id, BeanDefinition beanDefinition) {
+        this.beanDefinitionMap.put(id, beanDefinition);
     }
 
     @Override
     public Object getBean(String id) {
-        BeansDefinition beansDefinition = this.getBeanDefinition(id);
-        if (beansDefinition == null) {
+        BeanDefinition beanDefinition = this.getBeanDefinition(id);
+        if (beanDefinition == null) {
             throw new BeanCreationException("Bean definition does not exist");
         }
-        if (beansDefinition.isSingleton()) {
+        if (beanDefinition.isSingleton()) {
             Object bean = super.getSingleton(id);
             if (bean == null) {
-                bean = createBean(beansDefinition);
+                bean = createBean(beanDefinition);
                 super.registrySingleton(id, bean);
             }
             return bean;
         }
 
-        return createBean(beansDefinition);
+        return createBean(beanDefinition);
     }
 
     @Override
@@ -68,21 +66,21 @@ public class DefaultBeanFactory extends  DefaultSingletonBeanRegistry implements
         return classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader();
     }
 
-    private Object createBean(BeansDefinition beansDefinition) {
+    private Object createBean(BeanDefinition beanDefinition) {
         // 实例化bean
-        Object bean = instantiateBean(beansDefinition);
+        Object bean = instantiateBean(beanDefinition);
         // 设置属性
-        populateBean(beansDefinition, bean);
+        populateBean(beanDefinition, bean);
         return bean;
     }
 
-    private Object instantiateBean(BeansDefinition beansDefinition) {
-        if (beansDefinition.hasConstructorArgumentValues()) {
+    private Object instantiateBean(BeanDefinition beanDefinition) {
+        if (beanDefinition.hasConstructorArgumentValues()) {
             ConstructorResolver constructorResolver = new ConstructorResolver(this);
-            return constructorResolver.autowireConstructor(beansDefinition);
+            return constructorResolver.autowireConstructor(beanDefinition);
         }
 
-        String className = beansDefinition.getBeanClassName();
+        String className = beanDefinition.getBeanClassName();
         try {
             Class clazz = this.getBeanClassLoader().loadClass(className);
             return clazz.newInstance();
@@ -91,8 +89,8 @@ public class DefaultBeanFactory extends  DefaultSingletonBeanRegistry implements
         }
     }
 
-    private void populateBean(BeansDefinition beansDefinition, Object bean) {
-        List<PropertyValue> propertyValues = beansDefinition.getPropertyValues();
+    private void populateBean(BeanDefinition beanDefinition, Object bean) {
+        List<PropertyValue> propertyValues = beanDefinition.getPropertyValues();
         if (propertyValues == null || propertyValues.isEmpty()) {
             return ;
         }

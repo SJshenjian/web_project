@@ -1,11 +1,11 @@
 package com.haotu369.spring.v3;
 
-import com.haotu369.spring.beans.BeansDefinition;
+import com.haotu369.spring.beans.BeanDefinition;
 import com.haotu369.spring.beans.ConstructorArgument;
 import com.haotu369.spring.beans.factory.config.RuntimeBeanReference;
 import com.haotu369.spring.beans.factory.config.TypedStringValue;
 import com.haotu369.spring.beans.factory.support.DefaultBeanFactory;
-import com.haotu369.spring.beans.factory.xml.XMLBeanDefinitionReader;
+import com.haotu369.spring.beans.factory.xml.XmlBeanDefinitionReader;
 import com.haotu369.spring.core.io.ClassPathResource;
 import org.junit.Test;
 
@@ -23,11 +23,11 @@ public class BeanDefinitionTestV3 {
     @Test
     public void testGetBeanDefinition() {
         DefaultBeanFactory factory = new DefaultBeanFactory();
-        XMLBeanDefinitionReader reader = new XMLBeanDefinitionReader(factory);
-        reader.loadBeanDefinition(new ClassPathResource("petstore-v3.xml"));
+        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
+        reader.loadBeanDefinitions(new ClassPathResource("petstore-v3.xml"));
 
-        BeansDefinition beansDefinition = factory.getBeanDefinition("petStoreServiceOne");
-        ConstructorArgument constructorArgument = beansDefinition.getConstructorArgument();
+        BeanDefinition beanDefinition = factory.getBeanDefinition("petStoreServiceOne");
+        ConstructorArgument constructorArgument = beanDefinition.getConstructorArgument();
         List<ConstructorArgument.ValueHolder> valueHolders = constructorArgument.getArgumentValues();
 
         assertEquals(3, valueHolders.size());

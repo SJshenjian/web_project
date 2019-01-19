@@ -1,6 +1,6 @@
 package com.haotu369.spring.beans.factory.xml;
 
-import com.haotu369.spring.beans.BeansDefinition;
+import com.haotu369.spring.beans.BeanDefinition;
 import com.haotu369.spring.beans.ConstructorArgument;
 import com.haotu369.spring.beans.PropertyValue;
 import com.haotu369.spring.beans.factory.BeanDefinitionStoreException;
@@ -8,10 +8,9 @@ import com.haotu369.spring.beans.factory.config.RuntimeBeanReference;
 import com.haotu369.spring.beans.factory.config.TypedStringValue;
 import com.haotu369.spring.beans.factory.support.BeanDefinitionRegistry;
 import com.haotu369.spring.beans.factory.support.GenericBeanDefinition;
+import com.haotu369.spring.context.annotation.ClassPathBeanDefinitionScanner;
 import com.haotu369.spring.core.io.Resource;
-import com.haotu369.spring.util.ClassUtils;
 import com.haotu369.spring.util.StringUtils;
-import com.sun.org.apache.regexp.internal.RE;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -21,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * SRP单一职责原则
@@ -30,9 +28,9 @@ import java.util.NoSuchElementException;
  * @version V1.0
  * @date 2018/11/11
  */
-public class XMLBeanDefinitionReader {
+public class XmlBeanDefinitionReader {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XMLBeanDefinitionReader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlBeanDefinitionReader.class);
 
     public static final String ID_ATTRIBUTE = "id";
     public static final String CLASS_ATTRIBUTE = "class";
@@ -46,13 +44,17 @@ public class XMLBeanDefinitionReader {
     public static final String CONSTRUCTOR_ARG_ELEMENT = "constructor-arg";
     public static final String TYPE_ATTRIBUTE = "type";
 
+    public static final String BEANS_NAMESPACE_URI = "http://www.springframework.org/schema/beans";
+    public static final String CONTEXT_NAMESPACE_URI = "http://www.springframework.org/schema/context";
+    private static final String BASE_PACKAGE_ATTRIBUTE = "base-package";
+
     private BeanDefinitionRegistry beanDefinitionRegistry;
 
-    public XMLBeanDefinitionReader(BeanDefinitionRegistry beanDefinitionRegistry) {
+    public XmlBeanDefinitionReader(BeanDefinitionRegistry beanDefinitionRegistry) {
         this.beanDefinitionRegistry = beanDefinitionRegistry;
     }
 
-    public void loadBeanDefinition(Resource resource) {
+    public void loadBeanDefinitions(Resource resource) {
         try(
                 InputStream inputStream = resource.getInputStream();
         ) {
@@ -62,26 +64,47 @@ public class XMLBeanDefinitionReader {
             List<Element> elements = root.elements();
             for (int i = 0; i < elements.size(); i++) {
                 Element element = elements.get(i);
-                String beanId = element.attributeValue(ID_ATTRIBUTE);
-                String className = element.attributeValue(CLASS_ATTRIBUTE);
-                String scope = element.attributeValue(SCOPE_ATTRIBUTE);
-                BeansDefinition beansDefinition = new GenericBeanDefinition(beanId, className);
-                if (scope != null) {
-                    beansDefinition.setScope(scope);
+                String namespaceUri = element.getNamespaceURI();
+                if (this.isDefaultNameSpace(namespaceUri)) {
+                    parseDefaultElement(element);
+                } else if (this.isContextNameSpace(namespaceUri)) {
+                    parseComponentElement(element);
                 }
-                // 解析属性
-                parsePropertyElement(element, beansDefinition);
-
-                parseConstructorArgElement(element, beansDefinition);
-
-                beanDefinitionRegistry.registryBeanDefinition(beanId, beansDefinition);
             }
         } catch (Exception e) {
             throw new BeanDefinitionStoreException("IOException parsing XML document from '" + resource.getDescription() + "' fail");
         }
     }
 
-    public void parsePropertyElement(Element element, BeansDefinition beansDefinition) {
+    private void parseComponentElement(Element element) {
+        String basePackages = element.attributeValue(BASE_PACKAGE_ATTRIBUTE);
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(beanDefinitionRegistry);
+        scanner.doScan(basePackages);
+    }
+
+    private void parseDefaultElement(Element element) {
+        String beanId = element.attributeValue(ID_ATTRIBUTE);
+        String className = element.attributeValue(CLASS_ATTRIBUTE);
+        String scope = element.attributeValue(SCOPE_ATTRIBUTE);
+        BeanDefinition beanDefinition = new GenericBeanDefinition(beanId, className);
+        if (scope != null) {
+            beanDefinition.setScope(scope);
+        }
+        // 解析属性
+        parsePropertyElement(element, beanDefinition);
+        parseConstructorArgElement(element, beanDefinition);
+        beanDefinitionRegistry.registryBeanDefinition(beanId, beanDefinition);
+    }
+
+    public boolean isDefaultNameSpace(String namespaceUri) {
+        return (!StringUtils.hasLength(namespaceUri) || BEANS_NAMESPACE_URI.equals(namespaceUri));
+    }
+
+    private boolean isContextNameSpace(String namespaceUri) {
+        return (!StringUtils.hasLength(namespaceUri) || CONTEXT_NAMESPACE_URI.equals(namespaceUri));
+    }
+
+    public void parsePropertyElement(Element element, BeanDefinition beanDefinition) {
         Iterator iterator = element.elementIterator(PROPERTY_ELEMENT);
         while (iterator.hasNext()) {
             Element propElement = (Element) iterator.next();
@@ -91,19 +114,19 @@ public class XMLBeanDefinitionReader {
                 return ;
             }
 
-            Object value = parsePropertyValue(propElement, beansDefinition, propertyName);
+            Object value = parsePropertyValue(propElement, beanDefinition, propertyName);
             PropertyValue propertyValue = new PropertyValue(propertyName, value);
-            beansDefinition.getPropertyValues().add(propertyValue);
+            beanDefinition.getPropertyValues().add(propertyValue);
         }
     }
 
-    public void parseConstructorArgElement(Element element, BeansDefinition beansDefinition) {
+    public void parseConstructorArgElement(Element element, BeanDefinition beanDefinition) {
         Iterator iterator = element.elementIterator(CONSTRUCTOR_ARG_ELEMENT);
         while (iterator.hasNext()) {
             Element constructorArgElement = (Element) iterator.next();
             String typeAttr = constructorArgElement.attributeValue(TYPE_ATTRIBUTE);
             String nameAttr = constructorArgElement.attributeValue(NAME_ATTRIBUTE);
-            Object value = parsePropertyValue(constructorArgElement, beansDefinition, null);
+            Object value = parsePropertyValue(constructorArgElement, beanDefinition, null);
             ConstructorArgument.ValueHolder valueHolder = new ConstructorArgument.ValueHolder(value);
             if (typeAttr != null) {
                 valueHolder.setType(typeAttr);
@@ -111,11 +134,11 @@ public class XMLBeanDefinitionReader {
             if (nameAttr != null) {
                 valueHolder.setName(nameAttr);
             }
-            beansDefinition.getConstructorArgument().addArgumentValue(valueHolder);
+            beanDefinition.getConstructorArgument().addArgumentValue(valueHolder);
         }
     }
 
-    public Object parsePropertyValue(Element element, BeansDefinition beansDefinition, String propertyName) {
+    public Object parsePropertyValue(Element element, BeanDefinition beanDefinition, String propertyName) {
         String elementName = (propertyName != null) ? "<property> element for property '" + propertyName + "'" : "<constructor-arg> element";
         boolean hasRefAttribute = element.attribute(REF_ATTRIBUTE) != null;
         boolean hasValueAttribute = element.attribute(VALUE_ATTRIBUTE) != null;
