@@ -13,11 +13,11 @@
 	    environments?, databaseIdProvider?, mappers?
 	-->
 	<typeAliases>
-		<typeAlias alias="Blog" type="com.haotu369.xuefeng.model.Blog" />
-		<typeAlias alias="User" type="com.haotu369.xuefeng.model.User" />
-		<typeAlias alias="Visitor" type="com.haotu369.xuefeng.model.Visitor"/>
-		<typeAlias alias="Tag" type="com.haotu369.xuefeng.model.Tag"/>
-		<typeAlias alias="Project" type="com.haotu369.xuefeng.model.Project"/>
+		<typeAlias alias="Blog" type="online.shenjian.xuefeng.model.Blog" />
+		<typeAlias alias="User" type="online.shenjian.xuefeng.model.User" />
+		<typeAlias alias="Visitor" type="online.shenjian.xuefeng.model.Visitor"/>
+		<typeAlias alias="Tag" type="online.shenjian.xuefeng.model.Tag"/>
+		<typeAlias alias="Project" type="online.shenjian.xuefeng.model.Project"/>
 	</typeAliases>
 	
 	<plugins>

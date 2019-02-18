@@ -4,28 +4,28 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- 目前仅实现该方式注入 -->
-    <bean id="petStoreServiceOne" class="com.haotu369.service.v3.PetStoreService">
+    <bean id="petStoreServiceOne" class="online.shenjian.service.v3.PetStoreService">
         <constructor-arg ref="accountDao"/>
         <constructor-arg ref="itemDao"/>
         <constructor-arg value="2"/>
     </bean>
 
-    <bean id="petStoreServiceThree" class="com.haotu369.service.v3.PetStoreService">
+    <bean id="petStoreServiceThree" class="online.shenjian.service.v3.PetStoreService">
         <constructor-arg name="accountDao" ref="accountDao"/>
         <constructor-arg name="itemDao" ref="itemDao"/>
     </bean>
 
-    <bean id="petStoreServiceFour" class="com.haotu369.service.v3.PetStoreService">
-        <constructor-arg type="com.haotu369.dao.AccountDao" ref="accountDao"/>
-        <constructor-arg type="com.haotu369.dao.ItemDao" ref="itemDao"/>
+    <bean id="petStoreServiceFour" class="online.shenjian.service.v3.PetStoreService">
+        <constructor-arg type="online.shenjian.dao.AccountDao" ref="accountDao"/>
+        <constructor-arg type="online.shenjian.dao.ItemDao" ref="itemDao"/>
     </bean>
 
-    <bean id="petStoreServiceFive" class="com.haotu369.service.v3.PetStoreService">
+    <bean id="petStoreServiceFive" class="online.shenjian.service.v3.PetStoreService">
         <constructor-arg index="0" ref="accountDao"/>
         <constructor-arg index="1" ref="itemDao"/>
     </bean>
 
-    <bean id="accountDao" class="com.haotu369.dao.AccountDao"></bean>
+    <bean id="accountDao" class="online.shenjian.dao.AccountDao"></bean>
 
-    <bean id="itemDao" class="com.haotu369.dao.ItemDao"></bean>
+    <bean id="itemDao" class="online.shenjian.dao.ItemDao"></bean>
 </beans>

@@ -3,14 +3,14 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="petStoreService" class="com.haotu369.service.v2.PetStoreService">
+    <bean id="petStoreService" class="online.shenjian.service.v2.PetStoreService">
         <property name="accountDao" ref="accountDao"></property>
         <property name="itemDao" ref="itemDao"></property>
         <property name="author" value="Jian Shen"></property>
         <property name="version" value="2"></property>
     </bean>
 
-    <bean id="accountDao" class="com.haotu369.dao.AccountDao"></bean>
+    <bean id="accountDao" class="online.shenjian.dao.AccountDao"></bean>
 
-    <bean id="itemDao" class="com.haotu369.dao.ItemDao"></bean>
+    <bean id="itemDao" class="online.shenjian.dao.ItemDao"></bean>
 </beans>

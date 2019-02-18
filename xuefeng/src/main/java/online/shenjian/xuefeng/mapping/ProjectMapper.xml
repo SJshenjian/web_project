@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="online.shenjian.xuefeng.mapper.ProjectMapper" >
+	
+	<!-- 获取项目 -->
+	<select id="getProjectByPageNumSize" resultMap="projectResultMap">
+	    SELECT 
+	    	count,
+	    	DATE_FORMAT(date,'%m-%d') AS date,
+	    	descript,
+	    	id,
+	    	img,
+	    	name,
+	    	url,
+	    	type
+	    FROM 
+	    	project  	
+	</select>
+	
+	<!-- 查询项目总共数量 -->
+	<select id="getTotalProjectSize" resultType="int">
+	     SELECT COUNT(id) FROM project;
+	</select>
+	
+	<!-- 查询详细的项目内容 -->
+	<select id="getProject" parameterType="int" resultType="Project">
+		SELECT * FROM project WHERE id=#{id};
+	</select>
+	
+	<!-- 更新项目浏览量 -->
+	<update id="updateCount" parameterType="int">
+		UPDATE project SET count=count+1 WHERE id=#{id};
+	</update>
+	
+	<!-- 添加项目 -->
+	<insert id="addProject" parameterType="Project">
+		INSERT INTO project(
+						name,
+						descript,
+						problem,
+						img,
+						url,
+						type
+					)VALUES(
+						#{name},
+						#{descript},
+						#{problem},
+						#{img},
+						#{url},
+						#{type}
+					);		
+	</insert>
+	
+	<!-- 删除项目 -->
+	<delete id="deleteProject" parameterType="int">
+		DELETE FROM project WHERE id=#{id};
+	</delete>
+	
+	<!-- 更新项目 -->
+	<update id="updateProject" parameterType="Project">
+		UPDATE project SET
+				name=#{name},
+				descript=#{descript},
+				problem=#{problem},
+				url=#{url},
+				type=#{type}
+			WHERE id=#{id};
+	</update>
+	
+	
+	<resultMap type="Project" id="projectResultMap">
+		
+		<id property="id" column="id"/>
+		
+	   <result property="name" column="name"/>
+	   <result property="descript" column="descript"/>
+	   <result property="problem" column="problem"/>
+	   <result property="date" column="date"/>
+	   <result property="count" column="count"/>
+	   <result property="img" column="img"/>
+	   <result property="url" column="url"/>
+	   <result property="type" column="type"/>
+	   
+	</resultMap>
+	
+</mapper>
+ 
